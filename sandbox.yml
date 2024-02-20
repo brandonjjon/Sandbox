@@ -38,6 +38,7 @@
     - { role: code_server, tags: ['code-server'] }
     - { role: comicstreamer, tags: ['comicstreamer'] }
     - { role: comixed, tags: ['comixed'] }
+    - { role: configarr, tags: ['configarr'] }
     - { role: dashdot, tags: ['dashdot'] }
     - { role: dashy, tags: ['dashy'] }
     - { role: deemix, tags: ['deemix'] }

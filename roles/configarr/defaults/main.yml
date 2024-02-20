@@ -1,0 +1,16 @@
+#########################################################################
+# Title:         Sandbox: Configarr | Default Variables                 #
+# Author(s):     Organik                                                #
+# URL:           https://github.com/saltyorg/Sandbox                    #
+# --                                                                    #
+#########################################################################
+#                   GNU General Public License v3.0                     #
+#########################################################################
+---
+
+configarr_usenet_server_name: "{{ USENET_SERVER_NAME | default(configarr.usenet_server_name, true) }}"
+configarr_usenet_server_host: "{{ USENET_SERVER_HOST | default(configarr.usenet_server_host, true) }}"
+configarr_usenet_server_port: "{{ USENET_SERVER_PORT | default(configarr.usenet_server_port, true) }}"
+configarr_usenet_server_username: "{{ USENET_SERVER_USERNAME | default(configarr.usenet_server_username, true) }}"
+configarr_usenet_server_password: "{{ USENET_SERVER_PASSWORD | default(configarr.usenet_server_password, true) }}"
+configarr_usenet_server_connections: "{{ USENET_SERVER_CONNECTIONS | default(configarr.usenet_server_connections, true) }}"

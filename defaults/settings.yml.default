@@ -1,6 +1,13 @@
 ---
 a_train:
   remotes: [""]
+configarr:
+  usenet_server_name:
+  usenet_server_host:
+  usenet_server_port:
+  usenet_server_username:
+  usenet_server_password:
+  usenet_server_connections:
 delugevpn:
   vpn_endpoint: netherlands.ovpn
   vpn_pass: your_vpn_password

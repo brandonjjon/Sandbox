@@ -1,0 +1,3 @@
+---
+- name: Configure Sabnzbd
+  include_tasks: subtasks/configure_sabnzbd.yml

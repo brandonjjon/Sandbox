@@ -1,0 +1,65 @@
+---
+- name: Configure Sabnzbd | Stop container
+  community.docker.docker_container:
+    name: "{{ sabnzbd_docker_container }}"
+    container_default_behavior: compatibility
+    tls_hostname: localhost
+    state: stopped
+    comparisons:
+      '*': ignore
+
+- name: Configure Sabnzbd | Wait for 10 seconds
+  ansible.builtin.wait_for:
+    timeout: 10
+
+- name: Configure Sabnzbd | Backup original config
+  ansible.builtin.copy:
+    src: "{{ sabnzbd_paths_config_location }}"
+    dest: "{{ sabnzbd_paths_config_location }}.configarr-backup"
+    remote_src: yes
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
+    mode: "0775"
+
+- name: Configure Sabnzbd | Remove the [categories] section from the INI file
+  ansible.builtin.shell: |
+    awk '/^\[categories\]/{flag=1; next} /./{if(flag==1)next} 1' {{ sabnzbd_paths_config_location }} > temp.ini && mv temp.ini {{ sabnzbd_paths_config_location }}
+  args:
+    executable: /bin/bash
+
+- name: Create temporary file with template content
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/sabnzbd.ini.j2"
+    dest: "/tmp/sabnzbd_template_content.ini"
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
+    mode: "0775"
+
+- name: Append template content to the end of the configuration file
+  ansible.builtin.shell: |
+    cat /tmp/sabnzbd_template_content.ini >> {{ sabnzbd_paths_config_location }}
+  args:
+    executable: /bin/bash
+
+- name: Remove temporary template content file
+  ansible.builtin.file:
+    path: "/tmp/sabnzbd_template_content.ini"
+    state: absent
+
+- name: Configure Sabnzbd | Copy to .bak to persist through reboots
+  ansible.builtin.copy:
+    src: "{{ sabnzbd_paths_config_location }}"
+    dest: "{{ sabnzbd_paths_config_location }}.bak"
+    remote_src: yes
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
+    mode: "0775"
+
+- name: Configure Sabnzbd | Start container
+  community.docker.docker_container:
+    name: "{{ sabnzbd_docker_container }}"
+    container_default_behavior: compatibility
+    tls_hostname: localhost
+    state: started
+    comparisons:
+      '*': ignore

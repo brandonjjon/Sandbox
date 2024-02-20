@@ -1,0 +1,53 @@
+- name: Settings | Check if SABnzbd is installed
+  ansible.builtin.stat:
+    path: "{{ sabnzbd_paths_config_location }}"
+  register: stat_sabnzbd
+
+- name: Settings | Lookup SABnzbd API Key
+  ansible.builtin.set_fact:
+    sabnzbd_apikey: "{{ lookup('file', sabnzbd_paths_config_location) | regex_search('^api_key *= *.*', multiline=True) | regex_replace('.*= *(.*)$', '\\1') }}"
+  when: stat_sabnzbd.stat.exists
+
+- debug:
+    var: sabnzbd_apikey
+  when: stat_sabnzbd.stat.exists
+
+# - name: "Check if sonarr exists"
+#   ansible.builtin.stat:
+#     path: "/opt/sonarr/config.xml"
+#   register: sonarr_config
+#   when: (not traktarr_config.stat.exists)
+
+# - name: "When sonarr exists, add api key to traktar config"
+#   when: (not traktarr_config.stat.exists) and sonarr_config.stat.exists
+#   block:
+#     - name: Pull sonarr api key
+#       community.general.xml:
+#         path: "/opt/sonarr/config.xml"
+#         xpath: /Config/ApiKey
+#         content: text
+#       register: xmlresp
+
+#     - name: Set sonarr api Key
+#       ansible.builtin.set_fact:
+#         sonarr_api_key: "{{ xmlresp.matches[0].ApiKey }}"
+
+# - name: "Check if radarr exists"
+#   ansible.builtin.stat:
+#     path: "/opt/radarr/config.xml"
+#   register: radarr_config
+#   when: (not traktarr_config.stat.exists)
+
+# - name: "When radarr exists, add api key to traktar config"
+#   when: (not traktarr_config.stat.exists) and radarr_config.stat.exists
+#   block:
+#     - name: Pull radarr api key
+#       community.general.xml:
+#         path: "/opt/radarr/config.xml"
+#         xpath: /Config/ApiKey
+#         content: text
+#       register: xmlresp
+
+#     - name: Set radarr api Key
+#       ansible.builtin.set_fact:
+#         radarr_api_key: "{{ xmlresp.matches[0].ApiKey }}"
